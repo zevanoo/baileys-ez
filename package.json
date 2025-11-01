@@ -1,0 +1,39 @@
+{
+  "name": "@zevanoo/baileys-ez",
+  "version": "1.0.0",
+  "description": "Custom Baileys wrapper for multi-device WhatsApp bot",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "node build.js"
+  },
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "axios": "^1.13.1",
+    "baileys": "^7.0.0-rc.6",
+    "file-type": "^21.0.0",
+    "glob": "^10.3.10",
+    "mime-types": "^3.0.1",
+    "moment-timezone": "^0.6.0"
+  },
+  "keywords": [
+    "whatsapp",
+    "baileys",
+    "wrapper",
+    "multi-device",
+    "bot"
+  ],
+  "author": "Zevanoo",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zevanoo/baileys-wrapper.git"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.11"
+  }
+}
