@@ -1,45 +1,37 @@
-name: Publish to NPM on Push
+name: Publish Package
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: "contains(github.event.head_commit.message, '[skip ci]') == false"
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
 
-      - name: Configure Git
+      - name: Publish to NPM
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Bump version and publish
-        run: |
-          LAST_LIB_COMMIT=$(git log -1 --format=format:%H --full-diff lib)
-          CURRENT_COMMIT=$(git rev-parse HEAD)
-          if [[ "$LAST_LIB_COMMIT" == "$CURRENT_COMMIT" ]]; then
-            echo "No changes in 'lib' directory. Skipping publish."
-          else
-            echo "Changes detected in 'lib' directory. Publishing new version."
-            npm version patch -m "ci: release v%s [skip ci]"
-            npm publish --access public
-            git push --follow-tags
-          fi
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to GitHub Packages
+        run: |
+          echo "@zevanoo:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
