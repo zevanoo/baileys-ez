@@ -249,8 +249,6 @@ socket.on('newsletter-settings.update', ctx => console.log(ctx));
       about: 'About'
     }], options);
     
-    await client.getName(jid);
-    
     await client.downloadMediaMessage(m);
     
     client.parseMention(m);
