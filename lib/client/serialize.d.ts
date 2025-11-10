@@ -1,24 +1,18 @@
-/**
- * @param {import('baileys').WASocket & Action} client
- * @param {IWebMessageInfo} msg
- * @returns {Promise<SerializedMessage | undefined>}
- */
-export function serialize(client: import('baileys').WASocket & Action, msg: IWebMessageInfo): Promise<SerializedMessage | undefined>;
-export type IWebMessageInfo = import('baileys').proto.IWebMessageInfo;
-export type MessageGenerationOptions = import('baileys').MessageGenerationOptions;
-export type Client = import('../core/client.js').Client;
-export type Action = import('./action.js').Action;
-export type SerializedMessage = {
-    raw: IWebMessageInfo;
-    message: IWebMessageInfo['message'];
-    key: import('baileys').proto.IMessageKey;
+import { proto, MessageGenerationOptions, WASocket } from 'baileys';
+import { Action } from './action.js';
+import { Buffer } from 'buffer';
+import Long from 'long';
+export interface SerializedMessage {
+    raw: proto.IWebMessageInfo;
+    message: proto.IWebMessageInfo['message'];
+    key: proto.IMessageKey;
     from: string;
     fromMe: boolean;
     id: string;
     device: string;
     isBaileys: boolean;
     isGroup: boolean;
-    participant: string;
+    participant: string | null;
     sender: string;
     pushName: string;
     type: string | undefined;
@@ -39,19 +33,10 @@ export type SerializedMessage = {
     height: number | undefined | null;
     width: number | undefined | null;
     isAnimated: boolean | undefined | null;
-    reply: (text: string, options?: MessageGenerationOptions) => Promise<IWebMessageInfo | undefined>;
+    reply: (text: string, options?: MessageGenerationOptions) => Promise<proto.IWebMessageInfo | undefined>;
     download: () => Promise<Buffer>;
-    react: (emoji: string) => Promise<IWebMessageInfo | undefined>;
+    react: (emoji: string) => Promise<proto.IWebMessageInfo | undefined>;
     isQuoted: boolean;
     quoted: SerializedMessage | null;
-};
-export type ParsedMessage = {
-    body: string;
-    prefix: string | null;
-    prefixes: string[];
-    command: string | null;
-    arg: string[];
-    args: string[];
-    text: string;
-    argsParsed: Record<string, string | boolean>;
-};
+}
+export declare function serialize(client: WASocket & Action, msg: proto.IWebMessageInfo): Promise<SerializedMessage | undefined>;

@@ -34,6 +34,8 @@
     "url": "git+https://github.com/zevanoo/baileys-ez.git"
   },
   "devDependencies": {
+    "@types/mime-types": "^3.0.1",
+    "@types/node": "^24.10.0",
     "esbuild": "^0.25.11"
   }
 }

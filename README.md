@@ -38,10 +38,10 @@ const socket = new Client({
       browser: Browsers.ubuntu('Chrome')
       // other baileys config
     },
-    pairingCode: '12345678' // must 8 char, no more or less
-    serializer: (sock, m) => {
+    pairingCode: '12345678' // must 8 char, no more or less, optional
+    serializer: (client, m) => {
       return m
-    } // function to serialize message
+    }
 });
 
 socket.on('connection', (data) => {
@@ -76,7 +76,7 @@ import { createWrapper, Client, Browsers } from '@zevanoo/baileys-ez';
 
 const wrapper = createWrapper({
     folderName: 'sessions', // Folder to store session data
-    serializer: (sock, m) => {
+    serializer: (client, m) => {
       return m
     },
     pairingCode: '12345678' // same pairing code for all number
@@ -90,29 +90,31 @@ const socket = new Client({ id: 'bot1', number: '6281234567890' });
 const socket1 = new Client({ id: 'bot2', number: '6281234567891' });
 
 wrapper.on('message.new', (message) => {
-    console.log(`Message from ${message.clientId}:`, message.text);
+    console.log(`Message from ${message.clientId}:`, message.data.text);
 });
 
 wrapper.on('connection', (data) => {
-    if (data.status === 'connecting') {
+    if (data.data.status === 'connecting') {
       console.log(`id ${data.clientId} is connecting`)
     }
     
-    if (data.status === 'pairing-code') {
+    if (data.data.status === 'pairing-code') {
       console.log(`pairing code for id ${data.clientId}: ${data.data.code}`)
     }
     
-    if (data.status === 'open') {
+    if (data.data.status === 'open') {
       console.log('Connection open for id: ', data.clientId)
     }
     
-    if (data.status === 'close') {
+    if (data.data.status === 'close') {
       console.log(`Connection closed for id ${data.clientId}: ${data.data.statusCode} ${data.data.reason}`)
     }
 });
 
 await wrapper.connectAll();
 ```
+
+> Note: option serializer have default function, you can set custom if you don't want use this message metadata
 
 #### Connection Management (via Wrapper)
 
@@ -153,7 +155,7 @@ const wrapper = createWrapper({
     folderName: 'sessions',
 });
 
-const client1 = new Client({ id: 'bot1', number: '6281234567890' });
+const socket = new Client({ id: 'bot1', number: '6281234567890' });
 
 await wrapper.cleanupCorruptSessions();
 
